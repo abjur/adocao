@@ -1,0 +1,71 @@
+---
+title: "Book Example"
+author: "Associação Brasileira de Jurimetria"
+date: "`r format(Sys.Date(), '%d de %B de %Y')`"
+knit: "bookdown::render_book"
+documentclass: report
+bibliography: [bibliography/book.bib, bibliography/packages.bib]
+biblio-style: apalike
+link-citations: yes
+colorlinks: yes 
+lot: yes
+lof: yes
+site: bookdown::bookdown_site
+description: "Template de relatório da ABJ."
+---
+
+```{r setup, include = FALSE}
+#options(xtable.comment = FALSE)
+
+knitr::opts_chunk$set(echo = F, message = F, comment = F, warning = F, fig.height = 5, fig.width = 9)
+options(OutDec = ',')
+#options(knitr.table.format = 'markdown')
+```
+
+```{r include_table, echo = F}
+library(tidyverse)
+library(abjTemplates)
+library(abjAdocao)
+```
+
+# Introduction {#introducao-2}
+
+Para que o seu `bookdown` funcione tanto na web quanto no pdf, você deve evitar usar marcadores que dependem do contexto.
+
+Para fazer citações você deve usar [@Weinstein1997] ou @Weinstein1997. Isso também funciona pra pacotes [@R-base] ou @R-base. Para criar uma figura, é preferível que você use o `print` padrão do `knitr`. A label do gráfico será `fig:label-do-chunk`. Você pode citar fazendo \@ref(fig:label-do-chunk).
+
+```{r label-do-chunk, fig.cap = "Este é um gráfico."}
+qplot(1:10, 1:10) + 
+  labs(x = "Esse é o texto do x.", y = "Esse é o texto do y.")
+```
+
+Se você precisar importar uma imagem de fora do R, é melhor que você faça `![]()`, a despeito do que diz o Yihui.
+
+![Essa é a caption.](imgs/logoabj.png){#fig:logo}
+
+Se você estiver com muita vontade de seguir os ensinamentos do mestre, você pode usa o `knitr::include_graphics`, mas vai precisar setar `dpi = NA`.
+
+```{r mathquill, echo=FALSE, fig.align='center', fig.cap='The RStudio addin to help input LaTeX math.'}
+knitr::include_graphics('imgs/logo_abj.png', dpi = NA)
+```
+
+Essa forma tem três vantagens: 
+
+1. A label fica no mesmo formato das demais.
+2. Você pode setar o `fig.height` e o `fig.width`.
+3. A numeração vai funcionar corretamente no `html`.
+
+O problema é que esse jeito não é o natural do `pandoc`.
+
+De toda forma, não é uma boa criar imagens que vieram dentro de pastas. Você terá problemas com o `path` dos arquivos. Ao invés de simplesmente copiar as pastas, você precisa fazer isso manualmente.
+ 
+ Outro tipo de referência interessante é a referência a subseções. Você pode usar [essa sintaxe][objetivos] pra ir pra seção de objetivos. Você também pode usar \@ref(objetivos).
+ 
+Por fim, pra inserir tabelas, use apenas `kable`. Esse `book` sabe o que fazer dependendo do `output`.
+
+```{r tabela}
+mtcars %>% 
+  head(5) %>% 
+  kable(caption = "Essa é uma tabela.")
+```
+

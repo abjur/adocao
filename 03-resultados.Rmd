@@ -1,0 +1,55 @@
+# Resultados
+
+```{r}
+tipo <- "DISPONIVEL"
+
+idades <- purrr::map_dfr(c(TRUE, FALSE),
+                         get_idades,
+                         sit_crianca = tipo,
+                         sit_pretendente = tipo)
+
+etnias <- purrr::map_dfr(c(TRUE, FALSE),
+                         get_etnia,
+                         sit_crianca = tipo,
+                         sit_pretendente = tipo)
+```
+
+```{r}
+idades %>% 
+    mutate(idade = as.numeric(str_extract(idade, "[0-9]+"))) %>% 
+    group_by(idade, tipo) %>% 
+    summarise(frequencia = sum(frequencia),
+              porcentagem = sum(porcentagem)) %>% 
+    mutate(texto = scales::percent(porcentagem),
+           porcentagem = ifelse(tipo == "criancas", porcentagem, -porcentagem),
+           nudge = ifelse(tipo == "criancas", -0.5, 1.5)) %>% 
+    ggplot(aes(x = idade, y = porcentagem, fill = tipo)) +
+    geom_bar(stat = 'identity', alpha = 0.6) +
+    geom_text(aes(x = idade, y = porcentagem, label = texto, vjust = nudge), size = 2.5) +
+    theme_minimal() +
+    scale_fill_hue(name = "Tipo", labels = c("Crianças", "Pretendentes")) +
+    scale_x_continuous(breaks = 1:17) +
+    labs(y = '',
+         x = 'Idades máximas toleradas versus Idades das crianças cadastradas') +
+  theme(legend.position = 'bottom',
+        axis.text.y = element_blank())
+```
+
+```{r}
+etnias %>% 
+  mutate(texto = scales::percent(porcentagem),
+         porcentagem = ifelse(tipo == "criancas",
+                             porcentagem, -porcentagem),
+         nudge = ifelse(tipo == "criancas", -0.5, 1.5)) %>% 
+  ggplot(aes(x = etnia, y = porcentagem, fill = tipo)) +
+      geom_bar(stat = 'identity', alpha = 0.6) +
+  facet_wrap(~regiao) + 
+  geom_text(aes(x = etnia, y = porcentagem, label = texto, vjust = nudge), size = 2.5) +
+    theme_minimal() +
+    scale_fill_hue(name = "Tipo", labels = c("Crianças", "Pretendentes")) +
+    labs(y = '',
+         x = 'Idades máximas toleradas versus Idades das crianças cadastradas') +
+  theme(legend.position = 'bottom',
+        axis.text.y = element_blank())
+```
+
