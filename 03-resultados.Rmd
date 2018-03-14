@@ -27,10 +27,11 @@ idades %>%
     geom_bar(stat = 'identity', alpha = 0.6) +
     geom_text(aes(x = idade, y = porcentagem, label = texto, vjust = nudge), size = 2.5) +
     theme_minimal() +
-    scale_fill_hue(name = "Tipo", labels = c("Crianças", "Pretendentes")) +
+    scale_fill_hue(name = "", labels = c("Idade máxima aceita pelos pretendentes", "Idade das crianças disponíveis")) +
     scale_x_continuous(breaks = 1:17) +
     labs(y = '',
-         x = 'Idades máximas toleradas versus Idades das crianças cadastradas') +
+         x = '') +
+  theme_minimal(12) +
   theme(legend.position = 'bottom',
         axis.text.y = element_blank())
 ```
