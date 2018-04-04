@@ -1,6 +1,7 @@
 # Resultados
 
 ```{r}
+
 tipo <- "DISPONIVEL"
 
 idades <- purrr::map_dfr(c(TRUE, FALSE),
@@ -19,19 +20,20 @@ idades %>%
     mutate(idade = as.numeric(str_extract(idade, "[0-9]+"))) %>% 
     group_by(idade, tipo) %>% 
     summarise(frequencia = sum(frequencia),
-              porcentagem = sum(porcentagem)) %>% 
-    mutate(texto = scales::percent(porcentagem),
-           porcentagem = ifelse(tipo == "criancas", porcentagem, -porcentagem),
+              porcentagem = sum(porcentagem)) %>%
+    mutate(texto = round(porcentagem, 4),
+           texto = paste(100*texto, "%")) %>% 
+    mutate(porcentagem = ifelse(tipo == "criancas", porcentagem, -porcentagem),
            nudge = ifelse(tipo == "criancas", -0.5, 1.5)) %>% 
     ggplot(aes(x = idade, y = porcentagem, fill = tipo)) +
     geom_bar(stat = 'identity', alpha = 0.6) +
     geom_text(aes(x = idade, y = porcentagem, label = texto, vjust = nudge), size = 2.5) +
     theme_minimal() +
-    scale_fill_hue(name = "", labels = c("Idade máxima aceita pelos pretendentes", "Idade das crianças disponíveis")) +
+    scale_fill_hue(name = "", labels = c("Idade das crianças disponíveis", 
+                                         "Idade máxima aceita pelos pretendentes")) +
     scale_x_continuous(breaks = 1:17) +
-    labs(y = '',
-         x = '') +
-  theme_minimal(12) +
+    labs(y = '', x = '') +
+  theme_minimal() +
   theme(legend.position = 'bottom',
         axis.text.y = element_blank())
 ```
